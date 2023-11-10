@@ -61,7 +61,7 @@ jobs:
           git config --global user.name "徐晓伟"
           # 设置 SSH 秘钥
           mkdir -p ~/.ssh
-          echo "${{ secrets.JIHULAB_ID_RSA }}" >> ~/.ssh/id_rsa
+          echo "${{ secrets.JIHULAB_ID_RSA }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa
           # 信任域名
@@ -105,7 +105,7 @@ jobs:
           git config --global user.name "徐晓伟"
           # 设置 SSH 秘钥
           mkdir -p ~/.ssh
-          echo "${{ secrets.GITLAB_ID_RSA }}" >> ~/.ssh/id_rsa
+          echo "${{ secrets.GITLAB_ID_RSA }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa
           # 信任域名
