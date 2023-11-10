@@ -31,7 +31,7 @@ jobs:
           echo "YEAR_MONTH_DAY=$(date +'%Y-%m-%dZ')" >> $GITHUB_ENV
           echo "YEAR_MONTH_DAY_HOUR=$(date +'%Y-%m-%dT%HZ')" >> $GITHUB_ENV
           echo "YEAR_MONTH_DAY_HOUR_MINUTE=$(date +'%Y-%m-%dT%H-%MZ')" >> $GITHUB_ENV
-          echo "BODY=自动推送时的发布"
+          echo "BODY=自动推送时的发布" >> $GITHUB_ENV
 
       - name: Create Release
         uses: ncipollo/release-action@v1
