@@ -14,7 +14,7 @@ jobs:
       shared_value: ${{ steps.set_env.outputs.shared_value }}
     steps:
       - name: Set ENV
-        run: echo "shared_value=shared_value" >> $GITHUB_OUTPUT
+        run: echo "::set-output name={shared_value}::{shared_value}"
 
   job2:
     needs: job1
