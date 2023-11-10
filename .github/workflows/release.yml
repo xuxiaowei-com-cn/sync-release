@@ -93,7 +93,10 @@ jobs:
           git push --tags --progress jihulab
           echo "GITHUB_REPOSITORY:$GITHUB_REPOSITORY"
           jihulab_project_id=$(printf "%s" "$GITHUB_REPOSITORY" | jq -s -R -r @uri)
-          echo $jihulab_project_id
+          echo "jihulab_project_id:$jihulab_project_id"
+          echo "github.event.release.name:${{ github.event.release.name }}"
+          echo "github.event.release.tag_name:${{ github.event.release.tag_name }}"
+          echo "github.event.release.body:${{ github.event.release.body }}"
           # 发布 极狐GitLab
           curl --silent --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
