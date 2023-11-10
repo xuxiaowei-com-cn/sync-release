@@ -14,7 +14,8 @@ jobs:
       shared_value: ${{ steps.set_env.outputs.shared_value }}
     steps:
       - name: Set ENV
-        run: echo "::set-output name={shared_value}::{shared_value}"
+        id: set_env
+        run: echo "::set-output name=shared_value::shared_value"
 
   job2:
     needs: job1
