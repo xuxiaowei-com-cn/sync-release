@@ -91,12 +91,15 @@ jobs:
           git push --progress jihulab $GITHUB_REF_NAME:$GITHUB_REF_NAME
           # 推送所有标签
           git push --tags --progress jihulab
+          echo "GITHUB_REPOSITORY:$GITHUB_REPOSITORY"
+          const jihulab_project_id = encodeURIComponent($GITHUB_REPOSITORY);
+          echo $jihulab_project_id
           # 发布 极狐GitLab
           curl --silent --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --header "Content-Type: application/json" \
             --data "{\"name\": \"${{ github.event.release.name }}\", \"tag_name\": \"${{ github.event.release.tag_name }}\", \"description\": \"${{ github.event.release.body }}\", \"released_at\": null, \"assets\": []}" \
-            "https://jihulab.com/api/v4/projects/$GITHUB_REPOSITORY/releases"
+            "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases"
 
       # 将代码同步到 码云Gitee
       - name: Sync Gitee
