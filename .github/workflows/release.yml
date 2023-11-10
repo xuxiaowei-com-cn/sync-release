@@ -47,6 +47,8 @@ jobs:
     name: Sync
     # 仅在推送代码时执行
     if: github.event_name == 'push'
+    needs:
+      - publish
     runs-on: ${{ matrix.os }}
 
     strategy:
