@@ -82,7 +82,7 @@ jobs:
           jihulab_project_id=$(printf "%s" "$GITHUB_REPOSITORY" | jq -s -R -r @uri)
           echo "jihulab_project_id:$jihulab_project_id"
           # 发布 极狐GitLab
-          curl --header 'Content-Type: application/json'
+          curl --header 'Content-Type: application/json' \
               --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
               --data '{ "name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "tag_name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "description": "" }' \
               --request POST "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases"
