@@ -108,3 +108,10 @@ jobs:
           git push --progress gitee $GITHUB_REF_NAME:$GITHUB_REF_NAME
           # 推送所有标签
           git push --tags --progress gitee
+
+      - name: Publish Gitee
+        run: |
+          curl -X POST \
+            --header 'Content-Type: application/json;charset=UTF-8' \
+            'https://gitee.com/api/v5/repos/$GITHUB_REPOSITORY/releases' \
+            -d '{"access_token":"${{ secrets.GITEE_PRIVATE_TOKEN }}","tag_name":"v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}","name":"v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}","body":"${{ env.BODY }}","prerelease":"true","target_commitish":"$GITHUB_REF_NAME"}'
