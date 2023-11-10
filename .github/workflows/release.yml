@@ -91,3 +91,14 @@ jobs:
           git push --progress jihulab $GITHUB_REF_NAME:$GITHUB_REF_NAME
           # 推送所有标签
           git push --tags --progress jihulab
+
+      # 将代码同步到 码云Gitee
+      - name: Sync Gitee
+        run: |
+          git config --global user.email "xuxiaowei@xuxiaowei.com.cn"
+          git config --global user.name "徐晓伟"
+          git remote add gitee https://xuxiaowei-com-cn:$GITEE_PRIVATE_TOKEN@gitee.com/$CI_PROJECT_PATH.git
+          # 推送当前分支
+          git push --progress gitee $GITHUB_REF_NAME:$GITHUB_REF_NAME
+          # 推送所有标签
+          git push --tags --progress gitee
