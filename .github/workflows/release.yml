@@ -10,21 +10,19 @@ jobs:
 
   job1:
     runs-on: ubuntu-latest
+    outputs:
+      shared_value: ${{ steps.set_env.outputs.shared_value }}
     steps:
       - name: Set ENV
-        run: echo "MY_ENV=shared_value" >> $GITHUB_ENV
-      - name: Output Env
-        id: output_env
-        run: echo "::set-output name=my_env::shared_value"
+        id: set_env
+        run: echo "::set-output name=shared_value::shared_value"
 
   job2:
     needs: job1
     runs-on: ubuntu-latest
     steps:
-      - name: Get ENV from $GITHUB_ENV
-        run: echo "The value of MY_ENV is $MY_ENV"
-      - name: Get ENV from output
-        run: echo "The value of MY_ENV is ${{needs.job1.outputs.my_env}}"
+      - name: Get ENV from job1
+        run: echo "The value of shared_value is ${{needs.job1.outputs.shared_value}}"
 
   publish:
     runs-on: ubuntu-latest
