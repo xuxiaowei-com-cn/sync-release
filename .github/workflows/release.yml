@@ -78,17 +78,20 @@ jobs:
           git push --progress jihulab $GITHUB_REF_NAME:$GITHUB_REF_NAME
           # 推送所有标签
           git push --tags --progress jihulab
+
+      - name: Publish JihuLab
+        run: |
           echo "GITHUB_REPOSITORY:$GITHUB_REPOSITORY"
           jihulab_project_id=$(printf "%s" "$GITHUB_REPOSITORY" | jq -s -R -r @uri)
           echo "jihulab_project_id:$jihulab_project_id"
-          # 发布 极狐GitLab
-          # https://docs.gitlab.cn/jh/api/releases/#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83
+          
+          # 发布 极狐GitLab：https://docs.gitlab.cn/jh/api/releases/#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83
           curl --header 'Content-Type: application/json' \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --data '{ "name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "tag_name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "description": "" }' \
             --request POST "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases"
-          # 创建发布链接
-          # https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
+          
+          # 创建发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
           curl --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --data name="gitmoji.md" \
