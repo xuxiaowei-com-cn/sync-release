@@ -12,10 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       shared_value: ${{ steps.set_env.outputs.shared_value }}
+      test: ${{ steps.set_env_new.outputs.test }}
     steps:
       - name: Set ENV
         id: set_env
         run: echo "::set-output name=shared_value::shared_value"
+
+      - name: Set ENV（new）
+        id: set_env_new
+        run: echo "test=123456" >> $GITHUB_OUTPUT
 
   job2:
     needs: job1
@@ -23,6 +28,8 @@ jobs:
     steps:
       - name: Get ENV from job1
         run: echo "The value of shared_value is ${{needs.job1.outputs.shared_value}}"
+      - name: Get ENV from job1（new）
+        run: echo "The value of test is ${{needs.job1.outputs.test}}"
 
   publish:
     runs-on: ubuntu-latest
