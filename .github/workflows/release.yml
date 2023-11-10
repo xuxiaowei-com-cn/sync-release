@@ -94,14 +94,14 @@ jobs:
           echo "GITHUB_REPOSITORY:$GITHUB_REPOSITORY"
           jihulab_project_id=$(printf "%s" "$GITHUB_REPOSITORY" | jq -s -R -r @uri)
           echo "jihulab_project_id:$jihulab_project_id"
-          tag_name=$(git tag --points-at HEAD)
-          echo "tag_name:$tag_name"
-          body=自动推送时的发布
+          jihulab_tag_name=$(git tag --points-at HEAD)
+          echo "jihulab_tag_name:$jihulab_tag_name"
+          jihulab_body=自动推送时的发布
           # 发布 极狐GitLab
           curl --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --header "Content-Type: application/json" \
-            --data "{\"name\": \"${{ tag_name }}\", \"tag_name\": \"${{ tag_name }}\", \"description\": \"${{ body }}\", \"released_at\": null, \"assets\": []}" \
+            --data "{\"name\": \"${{ jihulab_tag_name }}\", \"tag_name\": \"${{ jihulab_tag_name }}\", \"description\": \"${{ jihulab_body }}\", \"released_at\": null, \"assets\": []}" \
             "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases"
 
       # 将代码同步到 码云Gitee
