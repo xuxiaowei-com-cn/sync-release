@@ -98,6 +98,50 @@ jobs:
             --data url="https://github.com/$GITHUB_REPOSITORY/releases/download/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md" \
             "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links"
 
+      # 将代码同步到 GitLab
+      - name: Sync GitLab
+        run: |
+          git config --global user.email "xuxiaowei@xuxiaowei.com.cn"
+          git config --global user.name "徐晓伟"
+          # 设置 SSH 秘钥
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITLAB_ID_RSA }}" >> ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval $(ssh-agent -s) && ssh-add ~/.ssh/id_rsa
+          # 信任域名
+          ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
+          # 查看当前分支
+          echo 当前分支：$GITHUB_REF_NAME
+          # 查看远端 极狐GitLab
+          echo git@gitlab.com:$GITHUB_REPOSITORY.git
+          # 添加远端 极狐GitLab
+          git remote add gitlab git@gitlab.com:$GITHUB_REPOSITORY.git
+          # 拉取
+          git pull --progress -v --no-rebase gitlab $GITHUB_REF_NAME
+          # 推送当前分支
+          git push --progress gitlab $GITHUB_REF_NAME:$GITHUB_REF_NAME
+          # 推送所有标签
+          git push --tags --progress gitlab
+
+      - name: Publish GitLab
+        run: |
+          echo "GITHUB_REPOSITORY:$GITHUB_REPOSITORY"
+          gitlab_project_id=$(printf "%s" "$GITHUB_REPOSITORY" | jq -s -R -r @uri)
+          echo "gitlab_project_id:$gitlab_project_id"
+          
+          # 发布 极狐GitLab：https://docs.gitlab.cn/jh/api/releases/#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83
+          curl --header 'Content-Type: application/json' \
+            --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_PRIVATE_TOKEN }}" \
+            --data '{ "name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "tag_name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "description": "" }' \
+            --request POST "https://gitlab.com/api/v4/projects/$gitlab_project_id/releases"
+          
+          # 创建发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
+          curl --request POST \
+            --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_PRIVATE_TOKEN }}" \
+            --data name="gitmoji.md" \
+            --data url="https://github.com/$GITHUB_REPOSITORY/releases/download/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md" \
+            "https://gitlab.com/api/v4/projects/$gitlab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links"
+
       # 将代码同步到 码云Gitee
       - name: Sync Gitee
         run: |
