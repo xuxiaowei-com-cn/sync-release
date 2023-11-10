@@ -14,11 +14,11 @@ jobs:
       shared_value: ${{ steps.set_env.outputs.shared_value }}
       test: ${{ steps.set_env_new.outputs.test }}
     steps:
-      - name: Set ENV
+      - name: Set ENV（旧写法，不推荐，该写法可能在将来会被删除）
         id: set_env
         run: echo "::set-output name=shared_value::shared_value"
 
-      - name: Set ENV（new）
+      - name: Set ENV（新写法，推荐）
         id: set_env_new
         run: echo "test=123456" >> $GITHUB_OUTPUT
 
@@ -26,9 +26,9 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     steps:
-      - name: Get ENV from job1
+      - name: Get ENV from job1 shared_value
         run: echo "The value of shared_value is ${{needs.job1.outputs.shared_value}}"
-      - name: Get ENV from job1（new）
+      - name: Get ENV from job1 test
         run: echo "The value of test is ${{needs.job1.outputs.test}}"
 
   publish:
