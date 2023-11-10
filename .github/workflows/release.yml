@@ -86,7 +86,7 @@ jobs:
           curl --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --data name="gitmoji.md" \
-            --data url="https://github.com/xuxiaowei-com-cn/sync-release/releases/download/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md" \
+            --data url="https://github.com/$GITHUB_REPOSITORY/releases/download/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md" \
             --data direct_asset_path="gitmoji.md" \
             "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links"
           # 发布 极狐GitLab
