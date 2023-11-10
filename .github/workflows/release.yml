@@ -92,7 +92,7 @@ jobs:
           # 推送所有标签
           git push --tags --progress jihulab
           echo "GITHUB_REPOSITORY:$GITHUB_REPOSITORY"
-          jihulab_project_id = echo $GITHUB_REPOSITORY | tr ' ' '%20'
+          jihulab_project_id=$(printf "%s" "$GITHUB_REPOSITORY" | jq -s -R -r @uri)
           echo $jihulab_project_id
           # 发布 极狐GitLab
           curl --silent --request POST \
