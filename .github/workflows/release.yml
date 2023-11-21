@@ -63,6 +63,7 @@ jobs:
         with:
           artifacts: |
             gitmoji.md
+            .gitignore
           body: ${{ env.BODY }}
           # draft: 草稿状态，为 true 时，不创建标签，默认为 false
           # draft: true
@@ -186,12 +187,38 @@ jobs:
             --data '{ "name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "tag_name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "description": "" }' \
             --request POST "https://gitlab.com/api/v4/projects/$gitlab_project_id/releases"
           
-          # 创建发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
+          # 发布 包文件：https://docs.gitlab.cn/jh/user/packages/generic_packages/index.html#%E5%8F%91%E5%B8%83%E5%8C%85%E6%96%87%E4%BB%B6
+          curl \
+            --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_PRIVATE_TOKEN }}" \
+            --upload-file gitmoji.md \
+            "https://gitlab.com/api/v4/projects/$gitlab_project_id/packages/generic/$generic_package_name/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md?select=package_file" > gitlab_response.json
+          
+          package_file_id=$(jq -r '.id' gitlab_response.json)
+          echo $package_file_id
+          
+          # 创建 发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
           curl --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_PRIVATE_TOKEN }}" \
             --data name="gitmoji.md" \
-            --data url="https://github.com/$GITHUB_REPOSITORY/releases/download/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md" \
+            --data url="https://gitlab.com/$GITHUB_REPOSITORY/-/package_files/$package_file_id/download" \
             "https://gitlab.com/api/v4/projects/$gitlab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links"
+          
+          # 发布 包文件：https://docs.gitlab.cn/jh/user/packages/generic_packages/index.html#%E5%8F%91%E5%B8%83%E5%8C%85%E6%96%87%E4%BB%B6
+          curl \
+            --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_PRIVATE_TOKEN }}" \
+            --upload-file .gitignore \
+            "https://gitlab.com/api/v4/projects/$gitlab_project_id/packages/generic/$generic_package_name/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/.gitignore?select=package_file" > gitlab_response.json
+          
+          package_file_id=$(jq -r '.id' gitlab_response.json)
+          echo $package_file_id
+          
+          # 创建 发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
+          curl --request POST \
+            --header "PRIVATE-TOKEN: ${{ secrets.GITLAB_PRIVATE_TOKEN }}" \
+            --data name=".gitignore" \
+            --data url="https://gitlab.com/$GITHUB_REPOSITORY/-/package_files/$package_file_id/download" \
+            "https://gitlab.com/api/v4/projects/$gitlab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links"
+
 
       # 将代码同步到 码云Gitee
       - name: Sync Gitee
