@@ -112,20 +112,20 @@ jobs:
           curl --header 'Content-Type: application/json' \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --data '{ "name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "tag_name": "v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}", "description": "" }' \
-            --request POST "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases"
+            --request POST "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases" && echo "发布 极狐GitLab 完成"
           
-          # 创建发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
+          # 创建 发布链接：https://docs.gitlab.cn/jh/api/releases/links.html#%E5%88%9B%E5%BB%BA%E5%8F%91%E5%B8%83%E9%93%BE%E6%8E%A5
           curl --request POST \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --data name="gitmoji.md" \
             --data url="https://github.com/$GITHUB_REPOSITORY/releases/download/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md" \
-            "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links"
+            "https://jihulab.com/api/v4/projects/$jihulab_project_id/releases/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/assets/links" && echo "创建 发布链接 完成"
           
-          # 发布包文件：https://docs.gitlab.cn/jh/user/packages/generic_packages/index.html#%E5%8F%91%E5%B8%83%E5%8C%85%E6%96%87%E4%BB%B6
+          # 发布 包文件：https://docs.gitlab.cn/jh/user/packages/generic_packages/index.html#%E5%8F%91%E5%B8%83%E5%8C%85%E6%96%87%E4%BB%B6
           curl \
             --header "PRIVATE-TOKEN: ${{ secrets.JIHULAB_PRIVATE_TOKEN }}" \
             --upload-file gitmoji.md \
-            "https://jihulab.com/api/v4/projects/$jihulab_project_id/packages/generic/my_package/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md?select=package_file"
+            "https://jihulab.com/api/v4/projects/$jihulab_project_id/packages/generic/my_package/v0.0.0-${{ env.YEAR_MONTH_DAY_HOUR_MINUTE }}/gitmoji.md?select=package_file" && echo "发布 包文件 完成"
 
 
       # 将代码同步到 GitLab
