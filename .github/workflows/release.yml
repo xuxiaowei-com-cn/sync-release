@@ -45,6 +45,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: env
+        run: |
+          env
+
       - name: Get current date
         id: date
         # bash, sh, cmd, powershell, pwsh
